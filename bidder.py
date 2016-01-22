@@ -85,12 +85,15 @@ def guess_price(venue, stock, attempts=10, sleep=0):
     attempts: number of attempts - some may have ask, others might not
     sleep: seconds
     """
-    quotes = []
+    asks, bids = [], []
     for i in range(attempts):
         time.sleep(sleep)
-        quotes.append(get_quote(venue, stock).get('ask'))
-    goodquotes = [i for i in quotes if i is not None]
-    return goodquotes, sum(goodquotes)/len(goodquotes)
+        quote = get_quote(venue, stock)
+        if 'ask' in quote:
+            asks.append(quote.get('ask'))
+        if 'bid' in quote:
+            bids.append(quote.get('bid'))
+    return sum(asks)/len(asks), sum(bids)/len(bids)
 
 
 def quote_websocket(account, venue, stock, listener):
